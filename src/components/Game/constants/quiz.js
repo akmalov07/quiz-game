@@ -22,4 +22,20 @@ export const QUESTIONS = [
   { q: "Flexbox'da bolalarni vertikal joylashtirish yo'nalishini o'zgartiruvchi xususiyat?", options: ["flex-direction", "flex-wrap", "align-self", "order"], correct: 0 },
   { q: "<meta charset=\"UTF-8\"> nima uchun kerak?", options: ["Sahifa rangini belgilaydi", "Matn kodlashini (harflar to'g'ri chiqishini) belgilaydi", "Shrift o'lchamini belgilaydi", "Sahifa tilini tarjima qiladi"], correct: 1 },
   { q: "CSS'da bir nechta elementga bir xil stil berish uchun nima ishlatiladi?", options: ["ID selektor (#)", "Class selektor (.)", "Tag nomi har doim", "Bunday imkoniyat yo'q"], correct: 1 },
+
+  // ---------- JavaScript savollari ----------
+  { q: "JavaScript'da o'zgaruvchi e'lon qilish uchun qaysi kalit so'zlar ishlatiladi?", options: ["var, let, const", "int, str, bool", "def, val, set", "dim, set, var"], correct: 0 },
+  { q: "console.log() nima uchun ishlatiladi?", options: ["Faylni saqlash uchun", "Brauzer konsoliga ma'lumot chiqarish uchun", "Sahifani qayta yuklash uchun", "CSS stil qo'shish uchun"], correct: 1 },
+  { q: "JavaScript'da massiv (array) qanday belgilanadi?", options: ["{}", "()", "[]", "<>"], correct: 2 },
+  { q: "== va === operatorlari orasidagi farq nima?", options: ["Hech qanday farq yo'q", "=== qiymat va turini ham tekshiradi", "== faqat sonlar uchun ishlaydi", "=== faqat matnlar uchun ishlaydi"], correct: 1 },
+  { q: "Funksiyani e'lon qilish uchun qaysi kalit so'z ishlatiladi?", options: ["func", "function", "def", "method"], correct: 1 },
+  { q: "JavaScript'da izoh (comment) qanday yoziladi?", options: ["<!-- izoh -->", "# izoh", "// izoh", "' izoh"], correct: 2 },
+  { q: "document.getElementById() nima qiladi?", options: ["Yangi element yaratadi", "id bo'yicha HTML elementni topadi", "Elementni o'chiradi", "CSS faylni ulaydi"], correct: 1 },
+  { q: "for tsikli nima uchun ishlatiladi?", options: ["Shart tekshirish uchun", "Ma'lumotni saqlash uchun", "Amallarni bir necha marta takrorlash uchun", "Funksiya chaqirish uchun"], correct: 2 },
+  { q: "JavaScript'da massivga yangi element qo'shish uchun qaysi metod ishlatiladi?", options: ["push()", "add()", "insert()", "append()"], correct: 0 },
+  { q: "typeof operatori nimani qaytaradi?", options: ["O'zgaruvchining qiymatini", "O'zgaruvchining turini (type)", "O'zgaruvchining nomini", "O'zgaruvchining hajmini"], correct: 1 },
+  { q: "JSON.stringify() nima qiladi?", options: ["JSON matnni obyektga aylantiradi", "Obyektni JSON matnga aylantiradi", "Faylni o'chiradi", "Massivni saralaydi"], correct: 1 },
+  { q: "addEventListener() nima uchun ishlatiladi?", options: ["Elementga hodisa (event) ulash uchun", "Yangi sahifa ochish uchun", "CSS stil o'zgartirish uchun", "Ma'lumotlar bazasiga ulanish uchun"], correct: 0 },
+  { q: "JavaScript'da shart operatori qaysi?", options: ["switch/case", "if/else", "loop/end", "try/catch"], correct: 1 },
+  { q: "null va undefined orasidagi farq nima?", options: ["Farqi yo'q, ikkalasi bir xil", "undefined - qiymat berilmagan, null - ataylab bo'sh qilib qo'yilgan", "null faqat massivlarda ishlatiladi", "undefined faqat funksiyalarda ishlatiladi"], correct: 1 },
 ];

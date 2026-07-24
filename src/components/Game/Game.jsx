@@ -17,10 +17,11 @@ import {
   FOX_BASE_SURROUND,
   ROUNDS_TO_WIN,
   MAX_ROUNDS,
+  MOVE_RANGE,
   hexDistance,
   hexKey,
 } from "./constants/hexMap";
-import { genCode, genId, shuffleArray, cx } from "./utils/helpers";
+import { genCode, genId, prepareQuizQuestions, cx } from "./utils/helpers";
 
 import FloatingShapes from "./components/FloatingShapes";
 import Confetti from "./components/Confetti";
@@ -30,6 +31,12 @@ import ResultBody from "./components/ResultBody";
 import HexMap from "./components/HexMap";
 import TeamHexMap from "./components/TeamHexMap";
 
+function playerStatsLabel(p) {
+  const answered = p.answered || 0;
+  const accuracy = answered > 0 ? Math.round((p.score / answered) * 100) : 0;
+  return `${p.score} to'g'ri / ${answered} savol (${accuracy}%)`;
+}
+
 export default function Game() {
   const [screen, setScreen] = useState("entry"); // entry | menu | quiz | result | lobby | mp-quiz | mp-result
   const [playerName, setPlayerName] = useState("");
@@ -38,7 +45,7 @@ export default function Game() {
 
   // solo quiz state
   const [current, setCurrent] = useState(0);
-  const [quizQuestions, setQuizQuestions] = useState(() => shuffleArray(QUESTIONS));
+  const [quizQuestions, setQuizQuestions] = useState(() => prepareQuizQuestions(QUESTIONS));
   const [score, setScore] = useState(0);
   const [selected, setSelected] = useState(null);
   const [locked, setLocked] = useState(false);
@@ -57,7 +64,7 @@ export default function Game() {
   const [mpLocked, setMpLocked] = useState(false);
   const [mpTimeLeft, setMpTimeLeft] = useState(TIME_PER_Q);
   const [mpCurrent, setMpCurrent] = useState(0);
-  const [mpQuizQuestions, setMpQuizQuestions] = useState(() => shuffleArray(QUESTIONS));
+  const [mpQuizQuestions, setMpQuizQuestions] = useState(() => prepareQuizQuestions(QUESTIONS));
   const [codeCopied, setCodeCopied] = useState(false);
   const [teamCaptured, setTeamCaptured] = useState({ tiger: {}, fox: {} });
   const mpExpiredRef = useRef(false);
@@ -96,7 +103,7 @@ export default function Game() {
   }, [screen, current, locked]);
 
   function startSolo() {
-    setQuizQuestions(shuffleArray(QUESTIONS));
+    setQuizQuestions(prepareQuizQuestions(QUESTIONS));
     setCurrent(0);
     setScore(0);
     setLog([]);
@@ -117,7 +124,8 @@ export default function Game() {
 
   function moveOnMap(target) {
     if (moveTokens <= 0 || mapWon) return;
-    if (hexDistance(mapPos, target) !== 1) return;
+    const dist = hexDistance(mapPos, target);
+    if (dist < 1 || dist > MOVE_RANGE) return;
     // Raqib qasrining katagiga bevosita bosib kirib bo'lmaydi — uni faqat o'rab olish mumkin
     if (target.q === RIVAL_POS.q && target.r === RIVAL_POS.r) return;
     setMapPos(target);
@@ -163,11 +171,12 @@ export default function Game() {
 
     // jamoadoshning bosgan (egallagan) katakchalari ustidan ham davom etib yurish mumkin
     const ownedKeys = Object.keys(mine).length ? Object.keys(mine) : [hexKey(myBase)];
-    const isAdjacent = ownedKeys.some((k) => {
+    const isReachable = ownedKeys.some((k) => {
       const [q, r] = k.split(",").map(Number);
-      return hexDistance({ q, r }, target) === 1;
+      const dist = hexDistance({ q, r }, target);
+      return dist >= 1 && dist <= MOVE_RANGE;
     });
-    if (!isAdjacent) return;
+    if (!isReachable) return;
 
     setMoveTokens((t) => t - 1);
 
@@ -318,7 +327,7 @@ export default function Game() {
       if (r.status === "playing") {
         setScreen((s) => {
           if (s === "lobby") {
-            setMpQuizQuestions(shuffleArray(QUESTIONS));
+            setMpQuizQuestions(prepareQuizQuestions(QUESTIONS));
             setMpCurrent(0);
             setMpSelected(null);
             setMpLocked(false);
@@ -392,6 +401,7 @@ export default function Game() {
     const me = players.find((p) => p.id === playerId);
     const isCorrect = i === q.correct;
     const newScore = (me ? me.score : 0) + (isCorrect ? 1 : 0);
+    const newAnswered = (me ? me.answered || 0 : 0) + 1;
     const willEarnToken = isCorrect && room.mode === "map" && correctSinceToken + 1 >= CORRECT_PER_TOKEN;
     if (isCorrect && room.mode === "map") {
       setCorrectSinceToken((prev) => {
@@ -406,15 +416,24 @@ export default function Game() {
     try {
       await update(ref(db, `rooms/${roomCode}/players/${playerId}`), {
         score: newScore,
+        answered: newAnswered,
         lastAnsweredQuestion: mpCurrent,
       });
     } catch (e) {}
 
     // javob berilgach — darhol (boshqalarni kutmasdan) keyingi savolga o'tish
-    const isLast = mpCurrent + 1 >= QUESTIONS.length;
+    const isLast = mpCurrent + 1 >= mpQuizQuestions.length;
     setTimeout(() => {
       if (!isLast) {
         setMpCurrent((c) => c + 1);
+        if (willEarnToken) {
+          openMap("mp-quiz");
+        }
+      } else if (room.mode === "map") {
+        // Xarita rejimida g'alaba raundlar orqali aniqlanadi (savollar soni orqali emas) —
+        // savollar tugab qolsa, ular qayta aralashtirilib davom etiladi, toki kimdir bazani o'rab olmaguncha.
+        setMpQuizQuestions(prepareQuizQuestions(QUESTIONS));
+        setMpCurrent(0);
         if (willEarnToken) {
           openMap("mp-quiz");
         }
@@ -521,7 +540,7 @@ export default function Game() {
 
         {screen === "entry" && (
           <div style={{ textAlign: "center", padding: "16px 0" }}>
-            <div className="qg-badge">HTML &amp; CSS Bilag'oni 🎯</div>
+            <div className="qg-badge">HTML, CSS &amp; JS Bilag'oni 🎯</div>
             <h1 className="qg-baloo qg-h1" style={{ fontSize: 26 }}>Ismingizni kiriting</h1>
             <input
               type="text"
@@ -742,10 +761,11 @@ export default function Game() {
             })()}
             {roomCode ? (
               <div className="qg-leaderboard">
+                <p className="qg-baloo qg-dim-text" style={{ fontSize: 13, marginBottom: 8 }}>📊 Statistika</p>
                 {[...players].sort((a, b) => b.score - a.score).map((p, i) => (
                   <div key={p.id} className={cx("qg-leaderboard-row", i === 0 && "qg-leaderboard-row--first")}>
                     <span>{i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : `${i + 1}.`} {p.name}{p.id === playerId ? " (siz)" : ""}</span>
-                    <span>{p.score} ball {p.finished ? "✅" : "⏳"}</span>
+                    <span>{playerStatsLabel(p)}</span>
                   </div>
                 ))}
               </div>
@@ -812,10 +832,11 @@ export default function Game() {
             )}
 
             <div className="qg-leaderboard">
+              <p className="qg-baloo qg-dim-text" style={{ fontSize: 13, marginBottom: 8 }}>📊 Statistika</p>
               {[...players].sort((a, b) => b.score - a.score).map((p, i) => (
                 <div key={p.id} className={cx("qg-leaderboard-row", i === 0 && "qg-leaderboard-row--first")}>
                   <span>{i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : `${i + 1}.`} {p.name}{p.id === playerId ? " (siz)" : ""}</span>
-                  <span>{p.score} ball {p.finished ? "✅" : "⏳"}</span>
+                  <span>{playerStatsLabel(p)} {p.finished ? "✅" : "⏳"}</span>
                 </div>
               ))}
             </div>

@@ -1,6 +1,6 @@
 import React from "react";
 import { cx } from "../utils/helpers";
-import { HEX_R, HEX_SIZE, PLAYER_START, RIVAL_POS, genHexGrid, hexToPixel, hexPolygonPoints, hexDistance } from "../constants/hexMap";
+import { HEX_R, HEX_SIZE, PLAYER_START, RIVAL_POS, MOVE_RANGE, genHexGrid, hexToPixel, hexPolygonPoints, hexDistance } from "../constants/hexMap";
 
 export default function HexMap({ moveTokens, mapPos, mapPath, mapWon, onMove, onBack, playerName }) {
   const cells = genHexGrid(HEX_R);
@@ -43,7 +43,8 @@ export default function HexMap({ moveTokens, mapPos, mapPath, mapWon, onMove, on
           const isOwnBase = c.q === PLAYER_START.q && c.r === PLAYER_START.r;
           const captured = !isRival && isCaptured(c);
           // raqib katagiga bevosita bosib kirib bo'lmaydi, faqat uning atrofidagi bo'sh katakchalarga yurish mumkin
-          const isReachable = !isRival && !mapWon && moveTokens > 0 && hexDistance(mapPos, c) === 1;
+          const dist = hexDistance(mapPos, c);
+          const isReachable = !isRival && !mapWon && moveTokens > 0 && dist >= 1 && dist <= MOVE_RANGE;
           const cls = cx(
             "qg-hex",
             isRival && "qg-hex--rival",

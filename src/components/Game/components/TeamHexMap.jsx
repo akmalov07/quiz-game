@@ -8,6 +8,7 @@ import {
   TIGER_BASE_SURROUND,
   FOX_BASE_SURROUND,
   MAX_ROUNDS,
+  MOVE_RANGE,
   hexKey,
   genHexGrid,
   hexToPixel,
@@ -58,7 +59,8 @@ export default function TeamHexMap({ moveTokens, teamCaptured, myTeam, round, ro
     if (myCaptured[hexKey(c)]) return false;
     return myOwnedKeys.some((k) => {
       const [q, r] = k.split(",").map(Number);
-      return hexDistance({ q, r }, c) === 1;
+      const dist = hexDistance({ q, r }, c);
+      return dist >= 1 && dist <= MOVE_RANGE;
     });
   }
 

@@ -55,12 +55,15 @@ export function hexNeighbors(pos, radius) {
 export const RIVAL_SURROUND = hexNeighbors(RIVAL_POS, HEX_R);
 
 // ---------- Jamoaviy (2 jamoa) xarita rejimi uchun ----------
-// Bazalar chekkada joylashgani uchun oddiy HEX_R radiusida ularning ba'zi qo'shni katakchalari xaritadan tashqarida qolib ketardi
-// (burchakdagi katakning atigi 3 ta qo'shnisi bo'ladi, 6 ta emas) — shu sabab bazani to'liq aylanib o'tish shart emas edi.
-// TEAM_HEX_R orqali xaritaga 1 qator qo'shimcha katak qo'shilib, bazalar atrofida to'liq (6 tomonlama) halqa hosil qilinadi.
-export const TEAM_HEX_R = HEX_R + 1;
-export const TIGER_BASE = { q: -HEX_R, r: 0 };
-export const FOX_BASE = { q: HEX_R, r: 0 };
+// Bazalar chekkada joylashsa, ularning ba'zi qo'shni katakchalari xaritadan tashqarida qolib ketadi
+// (burchakdagi katakning atigi 3 ta qo'shnisi bo'ladi, 6 ta emas) — shu sabab bazani to'liq aylanib o'tish shart bo'lmay qoladi.
+// TEAM_HEX_R = TEAM_BASE_DIST + 1 orqali bazadan 1 qator qo'shimcha bufer saqlanadi, shu bilan bazalar atrofida
+// har doim to'liq (6 tomonlama) halqa bo'ladi — xarita qanchalik kichraytirilsa ham bu buferni kamaytirmaslik kerak.
+// Yakka o'yindan (HEX_R/BASE_DIST) alohida — jamoaviy xaritani mustaqil ravishda kichraytirish mumkin bo'lsin uchun.
+export const TEAM_BASE_DIST = 2;
+export const TEAM_HEX_R = TEAM_BASE_DIST + 1;
+export const TIGER_BASE = { q: -TEAM_BASE_DIST, r: 0 };
+export const FOX_BASE = { q: TEAM_BASE_DIST, r: 0 };
 export const TIGER_BASE_SURROUND = hexNeighbors(TIGER_BASE, TEAM_HEX_R);
 export const FOX_BASE_SURROUND = hexNeighbors(FOX_BASE, TEAM_HEX_R);
 export const hexKey = (p) => `${p.q},${p.r}`;
@@ -69,3 +72,6 @@ export const hexKey = (p) => `${p.q},${p.r}`;
 // ROUNDS_TO_WIN ta raund yutgan jamoa umumiy g'olib bo'ladi (best-of-3) — shu sabab 3-raunddan oshib ketmaydi.
 export const ROUNDS_TO_WIN = 2;
 export const MAX_ROUNDS = 3;
+
+// Bitta yurish (token) bilan necha katakkacha bosib o'tish mumkinligi — xarita tezroq bosib o'tilishi uchun
+export const MOVE_RANGE = 3;
