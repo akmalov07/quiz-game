@@ -1,0 +1,525 @@
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@500;600;700;800&display=swap');
+
+/* ---------- Global reset (gorizontal scroll muammosini oldini olish uchun) ---------- */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+html, body, #root {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  overflow-x: hidden;
+}
+
+/* ---------- Rang va shrift o'zgaruvchilari ---------- */
+:root {
+  --qg-bg-top: #5B3DE0;
+  --qg-bg-bottom: #2FC9C0;
+  --qg-card: #FFFCF3;
+  --qg-ink: #2B2560;
+  --qg-dim: #7A759B;
+  --qg-track: #E9E4FF;
+
+  --qg-red: #FF5D73;
+  --qg-blue: #2F9BFF;
+  --qg-yellow: #FFC93C;
+  --qg-green: #35D19A;
+
+  --qg-red-deep: #E23F57;
+  --qg-blue-deep: #1478DE;
+  --qg-yellow-deep: #E8A800;
+  --qg-green-deep: #17B37F;
+
+  --qg-font-display: 'Baloo 2', 'Nunito', sans-serif;
+  --qg-font-body: 'Nunito', sans-serif;
+}
+
+/* ---------- Sahifa asosi ---------- */
+.qg-page {
+  position: relative;
+  width: 100%;
+  min-height: 680px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  overflow: hidden;
+  font-family: var(--qg-font-body);
+  background: linear-gradient(160deg, var(--qg-bg-top) 0%, var(--qg-bg-bottom) 100%);
+}
+
+.qg-baloo { font-family: var(--qg-font-display); }
+
+/* ---------- Animatsiyalar ---------- */
+@keyframes qg-confetti-fall {
+  from { transform: translateY(0) rotate(0deg); opacity: 1; }
+  to   { transform: translateY(560px) rotate(360deg); opacity: 0; }
+}
+@keyframes qg-pop-in {
+  0%   { transform: scale(0.85); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+.qg-pop { animation: qg-pop-in .35s ease; }
+
+/* ---------- Suzib yuruvchi fon shakllari / konfetti ---------- */
+.qg-float-layer,
+.qg-confetti-layer {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+.qg-float-icon { position: absolute; opacity: 0.55; }
+.qg-confetti-piece {
+  position: absolute;
+  top: -5%;
+  border-radius: 2px;
+  animation-name: qg-confetti-fall;
+  animation-timing-function: ease-in;
+  animation-fill-mode: forwards;
+}
+
+/* ---------- Karta ---------- */
+.qg-card {
+  position: relative;
+  width: 100%;
+  max-width: 640px;
+  border-radius: 28px;
+  padding: 32px;
+  background-color: var(--qg-card);
+  box-shadow: 0 20px 0 rgba(0,0,0,0.12), 0 20px 40px rgba(0,0,0,0.25);
+  transition: max-width .25s ease;
+}
+@media (min-width: 640px) { .qg-card { padding: 32px; } }
+.qg-card--wide {
+  max-width: 960px;
+}
+
+/* ---------- Progress / yuguruvchi ---------- */
+.qg-progress-track {
+  position: relative;
+  width: 100%;
+  height: 16px;
+  border-radius: 999px;
+  overflow: visible;
+  background-color: var(--qg-track);
+}
+.qg-progress-fill {
+  height: 16px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--qg-blue), var(--qg-green));
+  transition: width .5s ease;
+}
+.qg-runner-dot {
+  position: absolute;
+  top: -10px;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background-color: var(--qg-yellow);
+  border: 3px solid var(--qg-card);
+  box-shadow: 0 3px 0 rgba(0,0,0,0.15);
+  transition: left .5s cubic-bezier(.34,1.56,.64,1);
+}
+
+/* ---------- Umumiy matn elementlari ---------- */
+.qg-badge {
+  display: inline-block;
+  padding: 6px 16px;
+  border-radius: 999px;
+  margin-bottom: 16px;
+  font-size: 14px;
+  font-weight: 700;
+  background-color: var(--qg-yellow);
+  color: var(--qg-ink);
+}
+.qg-h1 {
+  font-weight: 800;
+  color: var(--qg-ink);
+  margin-bottom: 12px;
+}
+.qg-subtitle { color: var(--qg-dim); font-size: 15px; }
+.qg-dim-text { color: var(--qg-dim); }
+.qg-error-text { color: var(--qg-red); font-weight: 700; font-size: 14px; margin-top: 12px; }
+
+/* ---------- Input ---------- */
+.qg-input {
+  font-family: var(--qg-font-body);
+  width: 100%;
+  text-align: center;
+  font-size: 18px;
+  font-weight: 700;
+  padding: 12px 16px;
+  border-radius: 16px;
+  border: 2px solid var(--qg-track);
+  color: var(--qg-ink);
+  background-color: white;
+}
+.qg-input:focus { outline: none; border-color: var(--qg-blue); }
+.qg-input--code { letter-spacing: 0.3em; }
+
+/* ---------- Tugmalar (3D bosiladigan effekt) ---------- */
+.qg-btn {
+  font-family: var(--qg-font-display);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 14px 28px;
+  border: none;
+  border-radius: 16px;
+  font-size: 16px;
+  font-weight: 700;
+  color: white;
+  cursor: pointer;
+  transition: transform .08s ease;
+}
+.qg-btn:disabled { opacity: 0.55; cursor: not-allowed; }
+.qg-btn:active:not(:disabled) { transform: translateY(3px); }
+
+.qg-btn--green  { background-color: var(--qg-green);  box-shadow: 0 6px 0 var(--qg-green-deep); }
+.qg-btn--green:active:not(:disabled)  { box-shadow: 0 2px 0 var(--qg-green-deep); }
+
+.qg-btn--blue   { background-color: var(--qg-blue);   box-shadow: 0 6px 0 var(--qg-blue-deep); }
+.qg-btn--blue:active:not(:disabled)   { box-shadow: 0 2px 0 var(--qg-blue-deep); }
+
+.qg-btn--yellow { background-color: var(--qg-yellow); color: var(--qg-ink); box-shadow: 0 6px 0 var(--qg-yellow-deep); }
+.qg-btn--yellow:active:not(:disabled) { box-shadow: 0 2px 0 var(--qg-yellow-deep); }
+
+.qg-btn--small { width: auto; padding: 0; height: 44px; aspect-ratio: 1/1; border-radius: 12px; }
+
+.qg-link-btn {
+  margin-top: 16px;
+  font-family: var(--qg-font-display);
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: underline;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--qg-dim);
+}
+
+/* ---------- Bo'linuvchi (OR chizig'i) ---------- */
+.qg-divider-row { display: flex; align-items: center; gap: 12px; margin: 20px 0; }
+.qg-divider-line { height: 1px; flex: 1; background-color: var(--qg-track); }
+.qg-divider-label { font-family: var(--qg-font-display); font-size: 12px; font-weight: 700; color: var(--qg-dim); }
+
+/* ---------- Xonaga qo'shilish qatori ---------- */
+.qg-join-row { display: flex; gap: 8px; }
+
+/* ---------- Lobby ---------- */
+.qg-lobby-code {
+  font-family: var(--qg-font-display);
+  font-size: 38px;
+  font-weight: 800;
+  letter-spacing: 0.3em;
+  padding: 12px 24px;
+  border-radius: 16px;
+  background-color: var(--qg-track);
+  color: var(--qg-ink);
+}
+.qg-player-chip {
+  font-family: var(--qg-font-display);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 700;
+  background-color: var(--qg-track);
+  color: var(--qg-ink);
+}
+.qg-player-chip--host { background-color: var(--qg-yellow); }
+
+/* ---------- Savol ekrani ---------- */
+.qg-quiz-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+.qg-quiz-top-label { font-family: var(--qg-font-display); font-size: 14px; font-weight: 700; color: var(--qg-dim); }
+.qg-score-chip {
+  font-family: var(--qg-font-display);
+  font-size: 14px;
+  font-weight: 800;
+  padding: 4px 12px;
+  border-radius: 999px;
+  background-color: var(--qg-track);
+  color: var(--qg-ink);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.qg-timer-track { width: 100%; height: 10px; border-radius: 999px; margin-bottom: 20px; background-color: var(--qg-track); overflow: hidden; }
+.qg-timer-fill { height: 10px; border-radius: 999px; background-color: var(--qg-blue); transition: width .1s linear, background-color .3s; }
+.qg-timer-fill--danger { background-color: var(--qg-red); }
+
+.qg-question-box {
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 20px;
+  text-align: center;
+  background-color: rgba(91, 61, 224, 0.06);
+  border: 2px solid var(--qg-track);
+}
+.qg-question-text { font-family: var(--qg-font-display); font-size: 20px; font-weight: 800; color: var(--qg-ink); }
+
+/* ---------- Javob variantlari (shakl + rang) ---------- */
+.qg-options-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
+@media (min-width: 640px) { .qg-options-grid { grid-template-columns: 1fr 1fr; } }
+
+.qg-option {
+  font-family: var(--qg-font-display);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-align: left;
+  border-radius: 16px;
+  padding: 16px;
+  font-size: 15px;
+  font-weight: 700;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+.qg-option:disabled { cursor: default; }
+.qg-option:active:not(:disabled) { transform: scale(0.97); }
+
+.qg-option--c0 { background-color: var(--qg-red);    box-shadow: 0 5px 0 var(--qg-red-deep); }
+.qg-option--c1 { background-color: var(--qg-blue);   box-shadow: 0 5px 0 var(--qg-blue-deep); }
+.qg-option--c2 { background-color: var(--qg-yellow); box-shadow: 0 5px 0 var(--qg-yellow-deep); }
+.qg-option--c3 { background-color: var(--qg-green);  box-shadow: 0 5px 0 var(--qg-green-deep); }
+
+/* holat modifikatorlari — rang klasslaridan keyin yozilgani uchun ustun bo'ladi */
+.qg-option--correct { background-color: var(--qg-green); box-shadow: 0 5px 0 var(--qg-green-deep); opacity: 1; }
+.qg-option--wrong    { background-color: var(--qg-red);   box-shadow: 0 5px 0 var(--qg-red-deep);   opacity: 1; }
+.qg-option--dim       { background-color: #D8D4EE; box-shadow: 0 5px 0 #C2BCE0; opacity: 0.65; }
+
+/* ---------- Natija / reyting ---------- */
+.qg-result-trophy {
+  width: 80px; height: 80px;
+  margin: 0 auto 16px;
+  border-radius: 999px;
+  display: flex; align-items: center; justify-content: center;
+  background-color: var(--qg-yellow);
+  box-shadow: 0 6px 0 var(--qg-yellow-deep);
+}
+.qg-result-title { font-family: var(--qg-font-display); font-size: 24px; font-weight: 800; color: var(--qg-ink); margin-bottom: 4px; }
+.qg-result-score { font-family: var(--qg-font-display); font-size: 40px; font-weight: 800; color: var(--qg-blue); margin-bottom: 24px; }
+
+.qg-log-row { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-bottom: 28px; }
+.qg-log-dot {
+  width: 32px; height: 32px;
+  border-radius: 999px;
+  display: flex; align-items: center; justify-content: center;
+  color: white; font-size: 12px; font-weight: 700;
+}
+.qg-log-dot--ok { background-color: var(--qg-green); }
+.qg-log-dot--no { background-color: var(--qg-red); }
+
+.qg-leaderboard { display: flex; flex-direction: column; gap: 8px; margin-bottom: 28px; }
+.qg-leaderboard-row {
+  font-family: var(--qg-font-display);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 16px;
+  border-radius: 16px;
+  font-weight: 700;
+  background-color: var(--qg-track);
+  color: var(--qg-ink);
+}
+.qg-leaderboard-row--first { background-color: var(--qg-yellow); }
+
+/* ---------- Xarita (hex-grid) rejimi ---------- */
+.qg-map-token-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+.qg-map-token-chip {
+  font-size: 13px;
+  font-weight: 700;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background-color: var(--qg-track);
+  color: var(--qg-ink);
+}
+.qg-map-enter-btn {
+  font-family: var(--qg-font-display);
+  font-size: 13px;
+  font-weight: 700;
+  padding: 8px 16px;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  color: white;
+  background-color: var(--qg-green);
+  box-shadow: 0 4px 0 var(--qg-green-deep);
+}
+.qg-map-enter-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 var(--qg-green-deep); }
+
+.qg-map-hud {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+.qg-map-team { display: flex; align-items: center; gap: 8px; }
+.qg-map-team--right { flex-direction: row-reverse; }
+.qg-map-team-badge {
+  width: 40px; height: 40px;
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px;
+  border: 2px solid var(--qg-ink);
+}
+.qg-map-team-badge--tiger { background-color: var(--qg-red); }
+.qg-map-team-badge--fox { background-color: var(--qg-blue); }
+.qg-map-team-name { font-size: 13px; font-weight: 700; color: var(--qg-ink); }
+.qg-map-team-player { font-size: 11px; color: var(--qg-dim); }
+.qg-map-timer {
+  font-family: var(--qg-font-display);
+  font-weight: 800;
+  font-size: 14px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background-color: var(--qg-ink);
+  color: white;
+  white-space: nowrap;
+}
+
+.qg-fullmap-page {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(160deg, #7ED957 0%, #4CAF50 100%);
+  padding: 16px;
+  overflow-y: auto;
+  z-index: 50;
+  font-family: 'Nunito', sans-serif;
+}
+.qg-fullmap-page .qg-map-hud {
+  flex-shrink: 0;
+}
+.qg-fullmap-page .qg-map-svg {
+  flex: 1;
+  min-height: 0;
+  border-radius: 20px;
+}
+.qg-fullmap-page > div {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.qg-map-svg {
+  width: 100%;
+  height: 320px;
+  display: block;
+  border-radius: 16px;
+  background: linear-gradient(160deg, #7ED957 0%, #4CAF50 100%);
+  overflow: hidden;
+}
+.qg-map-svg--wide {
+  height: 460px;
+}
+@media (min-width: 640px) {
+  .qg-map-svg--wide { height: 520px; }
+}
+.qg-hex {
+  fill: #6FCB4A;
+  stroke: rgba(30, 90, 20, 0.25);
+  stroke-width: 1;
+  cursor: default;
+  transition: fill .15s ease;
+}
+.qg-hex--rival {
+  fill: #E9C46A;
+  stroke: #C9982F;
+}
+.qg-hex--reachable {
+  fill: #FFF3B0;
+  stroke: var(--qg-yellow-deep);
+  stroke-width: 1.5;
+  cursor: pointer;
+}
+.qg-hex--reachable:hover {
+  fill: var(--qg-yellow);
+}
+.qg-hex--own-base {
+  fill: #8FD9F0;
+  stroke: #4FB8DE;
+}
+.qg-hex--base-tiger {
+  fill: #6FCB4A;
+  stroke: var(--qg-red);
+  stroke-width: 2;
+}
+.qg-hex--base-fox {
+  fill: #6FCB4A;
+  stroke: var(--qg-blue);
+  stroke-width: 2;
+}
+.qg-grass-patch {
+  fill: rgba(40, 120, 30, 0.18);
+  pointer-events: none;
+}
+.qg-grass-sparkle {
+  fill: rgba(255, 255, 255, 0.55);
+  pointer-events: none;
+}
+.qg-base-ring {
+  fill: rgba(255, 255, 255, 0.35);
+  pointer-events: none;
+}
+.qg-base-ring--tiger {
+  stroke: var(--qg-red);
+  stroke-width: 2;
+}
+.qg-base-ring--fox {
+  stroke: var(--qg-blue);
+  stroke-width: 2;
+}
+.qg-hex--captured {
+  fill: var(--qg-red);
+  stroke: var(--qg-red-deep);
+}
+.qg-hex--captured-fox {
+  fill: var(--qg-blue);
+  stroke: var(--qg-blue-deep);
+}
+
+.qg-map-status {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--qg-dim);
+}
+.qg-map-status--win { color: var(--qg-green-deep); font-size: 16px; }
+.qg-map-status--empty { color: var(--qg-red); }
+
+/* ---------- Rejim tanlash kartochkalari (Viktorina / Jamoaviy xarita) ---------- */
+.qg-mode-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  text-align: left;
+  padding: 16px;
+  border-radius: 18px;
+  border: 2px solid var(--qg-track);
+  background-color: white;
+  cursor: pointer;
+  transition: border-color .15s ease, transform .08s ease;
+}
+.qg-mode-card:hover { border-color: var(--qg-blue); }
+.qg-mode-card:active { transform: translateY(2px); }
+.qg-mode-card-icon { font-size: 28px; flex-shrink: 0; }
+.qg-mode-card-title { display: block; font-size: 16px; font-weight: 800; color: var(--qg-ink); margin-bottom: 2px; }
+.qg-mode-card-desc { display: block; font-size: 12.5px; color: var(--qg-dim); }
